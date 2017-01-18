@@ -1,0 +1,8 @@
+{
+    "liferayWorkspaceEEVersion": "1.0.6-SNAPSHOT",
+    "liferayWorkspacePluginVersion": "1.1.0",
+    "liferayWorkspacePluginZipClasspathLocation":
+        "/com.liferay.gradle.plugins.workspace-1.1.0-sources.jar",
+    "liferayWorkspacePluginZipSampleWorkspaceDirectory":
+        "/samples"
+}
