@@ -26,11 +26,13 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 
 /**
  * @author Igor Arouca
  */
+@Component (immediate = true, service = RaspberryPiService.class)
 public class RaspberryPiServiceImpl implements RaspberryPiService {
 
 	@Override

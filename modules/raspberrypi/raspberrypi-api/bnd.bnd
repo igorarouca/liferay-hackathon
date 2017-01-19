@@ -1,4 +1,5 @@
 Bundle-Name: Raspberry Pi API
 Bundle-SymbolicName: com.liferay.portal.hackathon.raspberrypi.api
 Bundle-Version: 1.0.0
-Export-Package: com.liferay.portal.hackathon.raspberrypi.constants
+Export-Package: com.liferay.portal.hackathon.raspberrypi.constants, \
+	com.liferay.portal.hackathon.raspberrypi

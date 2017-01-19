@@ -1,6 +1,7 @@
 package com.liferay.portal.hackathon.portlet.action;
 
-import com.liferay.portal.hackathon.raspberrypi.service.RaspberryPiService;
+import com.liferay.portal.hackathon.raspberrypi.RaspberryPiService;
+import com.liferay.portal.hackathon.raspberrypi.constants.RaspberryPiServiceConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import org.osgi.service.component.annotations.Component;
@@ -24,7 +25,7 @@ public class TurnOffGreenAction extends BaseMVCActionCommand {
 		ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		_raspberryPiService.turnOff("Green");
+		_raspberryPiService.turnOff(RaspberryPiServiceConstants.Color.GREEN);
 	}
 
 	@Reference

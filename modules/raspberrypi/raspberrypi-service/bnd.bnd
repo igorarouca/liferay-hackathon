@@ -2,6 +2,6 @@ Bundle-Name: Raspberry Pi Service
 Bundle-SymbolicName: com.liferay.portal.hackathon.raspberrypi.service
 Bundle-Version: 1.0.0
 
-Export-Package: com.liferay.portal.hackathon.raspberrypi.configuratio
+Export-Package: com.liferay.portal.hackathon.raspberrypi.configuration
 
-Private-Package: com.liferay.portal.hackathon.raspberrypi.internaln
+Private-Package: com.liferay.portal.hackathon.raspberrypi.internal
