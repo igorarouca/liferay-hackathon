@@ -2,15 +2,14 @@ package com.liferay.portal.hackathon.raspberrypi.internal;
 
 import static com.liferay.portal.hackathon.raspberrypi.configuration.RaspberryPiServiceConfiguration.DEFAULT_HOST_NAME;
 import static com.liferay.portal.hackathon.raspberrypi.configuration.RaspberryPiServiceConfiguration.DEFAULT_PORT;
-import static com.liferay.portal.hackathon.raspberrypi.constants.RaspberryPiServiceConstants.Color.RED;
 
+import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -21,11 +20,13 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Igor Arouca
  */
+@Ignore
 public class RaspberryPiServiceImplTest {
 
 	@Before
@@ -43,20 +44,38 @@ public class RaspberryPiServiceImplTest {
 	@After
 	public void tearDown() {
 		_threadExecutor.shutdown();
+
+		closeQuietly(_socket);
+		closeQuietly(_serverSocket);
 	}
 
 	@Test
 	public void testTurnOn() throws InterruptedException {
-		CountDownLatch latch = startServer();
+		CountDownLatch socketConnectionLatch = startServer();
 
-		latch.await(1, TimeUnit.SECONDS);
+		socketConnectionLatch.await(1, TimeUnit.SECONDS);
 
-		_rasberryPiService.turnOn(RED);
+		_rasberryPiService.turnOn("red");
+		Assert.assertEquals("turnon red", readResponse());
 
+		_rasberryPiService.turnOn(Color.GREEN);
+		Assert.assertEquals("turnon green", readResponse());
+	}
+
+	protected void closeQuietly(Closeable closeable) {
+		try {
+			closeable.close();
+		}
+		catch (IOException ignored) {
+		}
+	}
+
+	protected String readResponse() {
 		String response = null;
 
-		try (BufferedReader in = new BufferedReader(
-				new InputStreamReader(_socket.getInputStream()))) {
+		try {
+			BufferedReader in = new BufferedReader(
+				new InputStreamReader(_socket.getInputStream()));
 
 			response = in.readLine();
 		}
@@ -64,19 +83,21 @@ public class RaspberryPiServiceImplTest {
 			ioe.printStackTrace();
 		}
 
-		Assert.assertEquals("turnon red", response);
+		return response;
 	}
 
 	protected CountDownLatch startServer() {
-		_latch = new CountDownLatch(1);
+		CountDownLatch socketConnectionLatch = new CountDownLatch(1);
 
 		int defaultPort = Integer.parseInt(DEFAULT_PORT);
 
 		Runnable startServer = () -> {
-			try (ServerSocket serverSocket = new ServerSocket(defaultPort)) {
-				_latch.countDown();
+			try {
+				_serverSocket = new ServerSocket(defaultPort);
 
-				_socket = serverSocket.accept();
+				socketConnectionLatch.countDown();
+
+				_socket = _serverSocket.accept();
 			}
 			catch (IOException ioe) {
 				ioe.printStackTrace();
@@ -87,11 +108,12 @@ public class RaspberryPiServiceImplTest {
 
 		_threadExecutor.submit(startServer);
 
-		return _latch;
+		return socketConnectionLatch;
 	}
 
-	private CountDownLatch _latch;
 	private RaspberryPiServiceImpl _rasberryPiService;
+	
+	private ServerSocket _serverSocket;
 	private Socket _socket;
 	private ExecutorService _threadExecutor;
 

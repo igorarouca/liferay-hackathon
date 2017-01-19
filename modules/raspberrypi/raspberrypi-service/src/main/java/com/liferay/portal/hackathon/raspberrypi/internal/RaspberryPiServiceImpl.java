@@ -1,33 +1,29 @@
 package com.liferay.portal.hackathon.raspberrypi.internal;
 
-import static com.liferay.portal.hackathon.raspberrypi.constants.RaspberryPiServiceConstants.Command.TURN_OFF;
-import static com.liferay.portal.hackathon.raspberrypi.constants.RaspberryPiServiceConstants.Command.TURN_ON;
-
-import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.hackathon.raspberrypi.RaspberryPiService;
-import com.liferay.portal.hackathon.raspberrypi.configuration.RaspberryPiServiceConfiguration;
-import com.liferay.portal.hackathon.raspberrypi.constants.RaspberryPiServiceConstants.Color;
-import com.liferay.portal.hackathon.raspberrypi.constants.RaspberryPiServiceConstants.Command;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
+
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.hackathon.raspberrypi.RaspberryPiService;
+import com.liferay.portal.hackathon.raspberrypi.configuration.RaspberryPiServiceConfiguration;
+import com.liferay.portal.hackathon.raspberrypi.exception.UnsupportedColor;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.CharPool;
+import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 
 /**
  * @author Igor Arouca
@@ -36,13 +32,19 @@ import org.osgi.service.component.annotations.Modified;
 public class RaspberryPiServiceImpl implements RaspberryPiService {
 
 	@Override
-	public void turnOff(Color color) {
-		openSocket().ifPresent(s -> sendCommand(s, TURN_OFF, color.toString()));
+	public void turnOff(String color) {
+		validate(StringUtil.lowerCase(color));
+
+		openSocket().ifPresent(
+			socket -> sendCommand(socket, Command.TURN_OFF, color));
 	}
 
 	@Override
-	public void turnOn(Color color) {
-		openSocket().ifPresent(s -> sendCommand(s, TURN_ON, color.toString()));
+	public void turnOn(String color) {
+		validate(StringUtil.lowerCase(color));
+
+		openSocket().ifPresent(
+			socket -> sendCommand(socket, Command.TURN_ON, color));
 	}
 
 	@Activate
@@ -117,10 +119,34 @@ public class RaspberryPiServiceImpl implements RaspberryPiService {
 		}
 	}
 
+	protected void validate(String color) {
+		if (!_SUPPORTED_COLORS.contains(color)) {
+			throw new UnsupportedColor(color);
+		}
+	}
+
+	private static String _removeUnderlines(String string) {
+		return StringUtil.removeChar(string, CharPool.UNDERLINE);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		RaspberryPiServiceImpl.class);
 
+	private static final List<String> _SUPPORTED_COLORS = 
+		Arrays.asList("green", "red");
+
 	private InetAddress _hostName;
 	private int _port;
+
+	private static enum Command {
+
+		TURN_ON, TURN_OFF;
+
+		@Override
+		public String toString() {
+			return StringUtil.lowerCase(_removeUnderlines(name()));
+		}
+
+	}
 
 }

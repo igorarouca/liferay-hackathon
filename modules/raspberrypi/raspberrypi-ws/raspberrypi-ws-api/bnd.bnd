@@ -1,0 +1,7 @@
+Bundle-SymbolicName: raspberrypi.ws-api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.portal.hackathon.raspberrypi.exception,\
+	com.liferay.portal.hackathon.raspberrypi.model,\
+	com.liferay.portal.hackathon.raspberrypi.service,\
+	com.liferay.portal.hackathon.raspberrypi.service.persistence

@@ -1,11 +1,15 @@
 dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
 	compileOnly group: "com.liferay", name: "com.liferay.osgi.util", version: "3.0.0"
-	compileOnly group: "com.liferay", name: "com.liferay.portal.configuration.metatype", version: '2.0.0'
 	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.6.0"
-
+	
 	compileOnly project(":modules:raspberrypi:raspberrypi-api")
+	compileOnly project(":modules:raspberrypi:raspberrypi-ws:raspberrypi-ws-api")
+}
 
-	testCompile group: "junit", name: "junit", version:"4.12"
+buildService {
+	apiDir = "../raspberrypi-ws-api/src/main/java"
+	osgiModule = true
+	propsUtil = "com.liferay.portal.hackathon.raspberrypi.service.util.PropsUtil"
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="com.liferay.portal.hackathon.raspberrypi.service.impl.RaspberryPiLocalServiceImpl" id="com.liferay.portal.hackathon.raspberrypi.service.RaspberryPiLocalService" />
+	<bean class="com.liferay.portal.hackathon.raspberrypi.service.impl.RaspberryPiServiceImpl" id="com.liferay.portal.hackathon.raspberrypi.service.RaspberryPiService" />
+	<bean class="com.liferay.portal.hackathon.raspberrypi.service.persistence.impl.RaspberryPiPersistenceImpl" id="com.liferay.portal.hackathon.raspberrypi.service.persistence.RaspberryPiPersistence" parent="basePersistence" />
+</beans>

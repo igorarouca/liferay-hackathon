@@ -1,0 +1,1 @@
+create index IX_F80BB977 on Hackathon_RaspberryPi (uuid_[$COLUMN_LENGTH:75$]);
